@@ -8,8 +8,8 @@ let
 
   wantsSddm = cfg.mode == "sddm" || cfg.mode == "both";
   wantsQuickshell = cfg.mode == "quickshell" || cfg.mode == "both";
-  manualSddm = cfg.enable && wantsSddm;
-  autoSddmTheme = builtins.elem (config.services.displayManager.sddm.theme or "") themeNames;
+  qylockSddmEnabled = cfg.enable && wantsSddm;
+  sddmThemeIsQylock = builtins.elem (config.services.displayManager.sddm.theme or "") themeNames;
 
   mkQylockThemePackage = theme: pkgs.runCommandLocal "qylock-theme-${theme}" { nativeBuildInputs = [ pkgs.gnused ]; } ''
     mkdir -p "$out/share/sddm/themes"
@@ -159,7 +159,7 @@ in
       };
     })
 
-    (mkIf (!manualSddm && autoSddmTheme) {
+    (mkIf (!qylockSddmEnabled && sddmThemeIsQylock) {
       environment.systemPackages = commonPackages ++ sddmPackages;
       services.displayManager.sddm.themePackages = [ (mkQylockThemePackage config.services.displayManager.sddm.theme) ];
     })
