@@ -131,6 +131,10 @@ Point your Window Manager keybind (e.g., in Hyprland, Qtile, Sway, or i3) direct
   <img src="https://img.shields.io/badge/-NIXOS%20SETUP-7dcfff?style=for-the-badge&labelColor=1a1b26&logo=nixos&logoColor=white" height="60" />
 </p>
 
+<details>
+<summary><b>NixOS setup anzeigen</b></summary>
+<br>
+
 Use this repo directly as a flake input and import the module:
 
 ```nix
@@ -160,6 +164,10 @@ Use this repo directly as a flake input and import the module:
   };
 }
 ```
+
+<details>
+<summary><b>Optionen & Theme-Namen anzeigen</b></summary>
+<br>
 
 `programs.qylock` is optional for pure SDDM usage.
 You only need it for Quickshell mode (`mode = "quickshell"` / `"both"`) or theme-specific overrides:
@@ -213,6 +221,8 @@ Valid `theme` names are:
 - `winter`
 - `wuwa`
 
+</details>
+
 If you pin to a specific revision:
 
 ```nix
@@ -235,6 +245,8 @@ Notes:
 - The module wires required dependencies for Qt6/Multimedia/GStreamer automatically.
 - For Quickshell mode, use `qylock-lock` as your lock command.
 - Font files that are not in this repo (see font requirements above) still need to be provided manually.
+
+</details>
 
 
 <p align="center">━━━━━━━ ◈ ━━━━━━━</p>
