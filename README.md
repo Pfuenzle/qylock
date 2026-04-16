@@ -190,6 +190,7 @@ If you pin to a specific revision:
 
 ```nix
 inputs.qylock.url = "github:Pfuenzle/qylock/<commit-or-tag>";
+# e.g. "github:Pfuenzle/qylock/8aa71dc" or "github:Pfuenzle/qylock/v1.0.0"
 ```
 
 You can also use `services.displayManager.sddm.theme` in the usual NixOS style:

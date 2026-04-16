@@ -159,7 +159,7 @@ in
       };
     })
 
-    (mkIf (!qylockSddmEnabled && sddmThemeIsQylock) {
+    (mkIf (!cfg.enable && sddmThemeIsQylock) {
       environment.systemPackages = commonPackages ++ sddmPackages;
       services.displayManager.sddm.themePackages = [ (mkQylockThemePackage config.services.displayManager.sddm.theme) ];
     })
