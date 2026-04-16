@@ -186,6 +186,33 @@ You only need it for Quickshell mode (`mode = "quickshell"` / `"both"`) or theme
 }
 ```
 
+Valid `theme` names are:
+- `Genshin`
+- `R1999_1`
+- `R1999_2`
+- `clockwork`
+- `dog-samurai`
+- `enfield`
+- `forest`
+- `last-of-us`
+- `minecraft`
+- `nier-automata`
+- `ninja_gaiden`
+- `osu`
+- `pixel-coffee`
+- `pixel-dusk-city`
+- `pixel-hollowknight`
+- `pixel-munchlax`
+- `pixel-night-city`
+- `pixel-rainyroom`
+- `pixel-skyscrapers`
+- `star-rail`
+- `sword`
+- `terraria`
+- `windows_7`
+- `winter`
+- `wuwa`
+
 If you pin to a specific revision:
 
 ```nix
