@@ -124,6 +124,49 @@ Point your Window Manager keybind (e.g., in Hyprland, Qtile, Sway, or i3) direct
 
 
 
+<a id="nixos-setup"></a>
+<br>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/-NIXOS%20SETUP-7dcfff?style=for-the-badge&labelColor=1a1b26&logo=nixos&logoColor=white" height="60" />
+</p>
+
+Import the module from this repository in your NixOS config and pick your preferred theme/background declaratively:
+
+```nix
+{
+  imports = [
+    /path/to/qylock/nix/module.nix
+  ];
+
+  services.displayManager.sddm.enable = true;
+
+  programs.qylock = {
+    enable = true;
+    mode = "both"; # "sddm" | "quickshell" | "both"
+    theme = "Genshin";
+
+    # Theme-specific options (only used for matching theme):
+    genshin.backgroundMode = "static"; # time | random | static
+    genshin.backgroundIndex = 2;       # 1..4
+
+    terraria.backgroundMode = "time";  # time | random | static
+    terraria.backgroundIndex = 1;      # 1..5
+
+    clockwork.themeMode = "dark";      # dark | light
+    clockwork.enableWindup = true;
+
+    osu.gameMode = "game";             # menu | game
+  };
+}
+```
+
+Notes:
+- The module wires required dependencies for Qt6/Multimedia/GStreamer automatically.
+- For Quickshell mode, use `qylock-lock` as your lock command.
+- Font files that are not in this repo (see font requirements above) still need to be provided manually.
+
+
 <p align="center">━━━━━━━ ◈ ━━━━━━━</p>
 
 <a id="faq"></a>
