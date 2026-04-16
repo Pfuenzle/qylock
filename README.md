@@ -132,7 +132,7 @@ Point your Window Manager keybind (e.g., in Hyprland, Qtile, Sway, or i3) direct
 </p>
 
 <details>
-<summary><b>NixOS setup anzeigen</b></summary>
+<summary><b>Show NixOS setup</b></summary>
 <br>
 
 Use this repo directly as a flake input and import the module:
@@ -166,7 +166,7 @@ Use this repo directly as a flake input and import the module:
 ```
 
 <details>
-<summary><b>Optionen & Theme-Namen anzeigen</b></summary>
+<summary><b>Show options & theme names</b></summary>
 <br>
 
 `programs.qylock` is optional for pure SDDM usage.
