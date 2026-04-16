@@ -1,7 +1,7 @@
 { config, lib, pkgs, ... }:
 let
   cfg = config.programs.qylock;
-  inherit (lib) mkEnableOption mkIf mkOption types;
+  inherit (lib) hasAttrByPath mkEnableOption mkIf mkOption types;
 
   themeNames =
     lib.attrNames (lib.filterAttrs (_: t: t == "directory") (builtins.readDir ../themes));
@@ -10,6 +10,10 @@ let
   wantsQuickshell = cfg.mode == "quickshell" || cfg.mode == "both";
   qylockSddmEnabled = cfg.enable && wantsSddm;
   sddmThemeIsQylock = builtins.elem (config.services.displayManager.sddm.theme or "") themeNames;
+  sddmPackage =
+    if hasAttrByPath [ "kdePackages" "sddm" ] pkgs
+    then pkgs.kdePackages.sddm
+    else pkgs.sddm;
 
   mkQylockThemePackage = theme: pkgs.runCommandLocal "qylock-theme-${theme}" { nativeBuildInputs = [ pkgs.gnused ]; } ''
     mkdir -p "$out/share/sddm/themes"
@@ -69,7 +73,7 @@ let
   ];
 
   sddmPackages = [
-    pkgs.sddm
+    sddmPackage
     pkgs.qt6.qtsvg
   ];
 
