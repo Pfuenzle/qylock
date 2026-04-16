@@ -161,6 +161,35 @@ Import the module from this repository in your NixOS config and pick your prefer
 }
 ```
 
+Or import it directly via flake input (GitHub URL):
+
+```nix
+{
+  inputs.qylock.url = "github:Pfuenzle/qylock";
+
+  outputs = { self, nixpkgs, qylock, ... }: {
+    nixosConfigurations.myhost = nixpkgs.lib.nixosSystem {
+      system = "x86_64-linux";
+      modules = [
+        qylock.nix.module
+        ({ ... }: {
+          services.displayManager.sddm.enable = true;
+          programs.qylock.enable = true;
+          programs.qylock.mode = "both";
+          programs.qylock.theme = "Genshin";
+        })
+      ];
+    };
+  };
+}
+```
+
+If you pin to a specific revision:
+
+```nix
+inputs.qylock.url = "github:Pfuenzle/qylock/<commit-or-tag>";
+```
+
 Notes:
 - The module wires required dependencies for Qt6/Multimedia/GStreamer automatically.
 - For Quickshell mode, use `qylock-lock` as your lock command.
