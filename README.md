@@ -161,17 +161,20 @@ Import the module from this repository in your NixOS config and pick your prefer
 }
 ```
 
-Or import it directly via flake input (GitHub URL):
+Or import it via a flake input (GitHub URL), even though this repo itself is not a flake:
 
 ```nix
 {
-  inputs.qylock.url = "github:Pfuenzle/qylock";
+  inputs.qylock-src = {
+    url = "github:Pfuenzle/qylock";
+    flake = false;
+  };
 
-  outputs = { self, nixpkgs, qylock, ... }: {
+  outputs = { self, nixpkgs, qylock-src, ... }: {
     nixosConfigurations.myhost = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
       modules = [
-        qylock.nix.module
+        "${qylock-src}/nix/module.nix"
         ({ ... }: {
           services.displayManager.sddm.enable = true;
           programs.qylock.enable = true;
@@ -187,7 +190,7 @@ Or import it directly via flake input (GitHub URL):
 If you pin to a specific revision:
 
 ```nix
-inputs.qylock.url = "github:Pfuenzle/qylock/<commit-or-tag>";
+inputs.qylock-src.url = "github:Pfuenzle/qylock/<commit-or-tag>";
 ```
 
 Notes:
