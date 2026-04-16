@@ -161,6 +161,27 @@ Import the module from this repository in your NixOS config and pick your prefer
 }
 ```
 
+You can still configure SDDM in the usual NixOS style (theme + `settings.Theme`) and override as needed:
+
+```nix
+{
+  services.displayManager.sddm = {
+    enable = true;
+    theme = "Genshin";
+    settings.Theme = {
+      CursorTheme = "breeze_cursors";
+      CursorSize = 24;
+    };
+  };
+
+  programs.qylock = {
+    enable = true;
+    mode = "sddm";
+    theme = "Genshin"; # default; can be overridden via services.displayManager.sddm.theme
+  };
+}
+```
+
 Or import it via a flake input (GitHub URL), even though this repo itself is not a flake:
 
 ```nix

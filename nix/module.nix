@@ -151,7 +151,7 @@ in
       ++ lib.optionals wantsQuickshell (quickshellPackages ++ [ qylockQuickshellPackage ]);
 
     services.displayManager.sddm = mkIf wantsSddm {
-      theme = cfg.theme;
+      theme = lib.mkDefault cfg.theme;
       themePackages = [ qylockThemePackage ];
     };
   };
