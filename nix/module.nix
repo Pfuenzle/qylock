@@ -51,7 +51,7 @@ let
       cat > "$out/bin/qylock-lock" <<'EOF'
       #!${pkgs.bash}/bin/bash
       set -euo pipefail
-      exec "${placeholder "out"}/share/qylock/quickshell-lockscreen/lock.sh" "${1:-${cfg.theme}}"
+      exec "${placeholder "out"}/share/qylock/quickshell-lockscreen/lock.sh" "''${1:-${cfg.theme}}"
       EOF
       chmod +x "$out/bin/qylock-lock"
     '';
