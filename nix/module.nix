@@ -8,15 +8,17 @@ let
 
   wantsSddm = cfg.mode == "sddm" || cfg.mode == "both";
   wantsQuickshell = cfg.mode == "quickshell" || cfg.mode == "both";
+  manualSddm = cfg.enable && wantsSddm;
+  autoSddmTheme = builtins.elem (config.services.displayManager.sddm.theme or "") themeNames;
 
-  qylockThemePackage = pkgs.runCommandLocal "qylock-theme-${cfg.theme}" { nativeBuildInputs = [ pkgs.gnused ]; } ''
+  mkQylockThemePackage = theme: pkgs.runCommandLocal "qylock-theme-${theme}" { nativeBuildInputs = [ pkgs.gnused ]; } ''
     mkdir -p "$out/share/sddm/themes"
-    cp -r ${../themes}/${cfg.theme} "$out/share/sddm/themes/${cfg.theme}"
-    chmod -R u+w "$out/share/sddm/themes/${cfg.theme}"
+    cp -r ${../themes}/${theme} "$out/share/sddm/themes/${theme}"
+    chmod -R u+w "$out/share/sddm/themes/${theme}"
 
-    conf="$out/share/sddm/themes/${cfg.theme}/theme.conf"
+    conf="$out/share/sddm/themes/${theme}/theme.conf"
     if [ -f "$conf" ]; then
-      case "${cfg.theme}" in
+      case "${theme}" in
         terraria)
           sed -i "s/^background_mode=.*/background_mode=${cfg.terraria.backgroundMode}/" "$conf"
           sed -i "s/^background_index=.*/background_index=${toString cfg.terraria.backgroundIndex}/" "$conf"
@@ -137,22 +139,29 @@ in
     };
   };
 
-  config = mkIf cfg.enable {
-    assertions = [
-      {
-        assertion = !wantsSddm || config.services.displayManager.sddm.enable or false;
-        message = "programs.qylock.mode includes 'sddm', but services.displayManager.sddm.enable is false.";
-      }
-    ];
+  config = lib.mkMerge [
+    (mkIf cfg.enable {
+      assertions = [
+        {
+          assertion = !wantsSddm || config.services.displayManager.sddm.enable or false;
+          message = "programs.qylock.mode includes 'sddm', but services.displayManager.sddm.enable is false.";
+        }
+      ];
 
-    environment.systemPackages =
-      commonPackages
-      ++ lib.optionals wantsSddm sddmPackages
-      ++ lib.optionals wantsQuickshell (quickshellPackages ++ [ qylockQuickshellPackage ]);
+      environment.systemPackages =
+        commonPackages
+        ++ lib.optionals wantsSddm sddmPackages
+        ++ lib.optionals wantsQuickshell (quickshellPackages ++ [ qylockQuickshellPackage ]);
 
-    services.displayManager.sddm = mkIf wantsSddm {
-      theme = lib.mkDefault cfg.theme;
-      themePackages = [ qylockThemePackage ];
-    };
-  };
+      services.displayManager.sddm = mkIf wantsSddm {
+        theme = lib.mkDefault cfg.theme;
+        themePackages = [ (mkQylockThemePackage cfg.theme) ];
+      };
+    })
+
+    (mkIf (!manualSddm && autoSddmTheme) {
+      environment.systemPackages = commonPackages ++ sddmPackages;
+      services.displayManager.sddm.themePackages = [ (mkQylockThemePackage config.services.displayManager.sddm.theme) ];
+    })
+  ];
 }

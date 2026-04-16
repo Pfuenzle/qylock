@@ -131,22 +131,47 @@ Point your Window Manager keybind (e.g., in Hyprland, Qtile, Sway, or i3) direct
   <img src="https://img.shields.io/badge/-NIXOS%20SETUP-7dcfff?style=for-the-badge&labelColor=1a1b26&logo=nixos&logoColor=white" height="60" />
 </p>
 
-Import the module from this repository in your NixOS config and pick your preferred theme/background declaratively:
+Use this repo directly as a flake input and import the module:
 
 ```nix
 {
-  imports = [
-    /path/to/qylock/nix/module.nix
-  ];
+  inputs = {
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    qylock.url = "github:Pfuenzle/qylock";
+  };
 
-  services.displayManager.sddm.enable = true;
+  outputs = { nixpkgs, qylock, ... }: {
+    nixosConfigurations.myhost = nixpkgs.lib.nixosSystem {
+      system = "x86_64-linux";
+      modules = [
+        qylock.nixosModules.default
+        ({ ... }: {
+          services.displayManager.sddm = {
+            enable = true;
+            theme = "Genshin";
+            settings.Theme = {
+              CursorTheme = "breeze_cursors";
+              CursorSize = 24;
+            };
+          };
+        })
+      ];
+    };
+  };
+}
+```
 
+`programs.qylock` is optional for pure SDDM usage.
+You only need it for Quickshell mode (`mode = "quickshell"` / `"both"`) or theme-specific overrides:
+
+```nix
+{
   programs.qylock = {
     enable = true;
     mode = "both"; # "sddm" | "quickshell" | "both"
     theme = "Genshin";
 
-    # Theme-specific options (only used for matching theme):
+    # Theme-specific options:
     genshin.backgroundMode = "static"; # time | random | static
     genshin.backgroundIndex = 2;       # 1..4
 
@@ -161,57 +186,21 @@ Import the module from this repository in your NixOS config and pick your prefer
 }
 ```
 
-You can still configure SDDM in the usual NixOS style (theme + `settings.Theme`) and override as needed:
+If you pin to a specific revision:
+
+```nix
+inputs.qylock.url = "github:Pfuenzle/qylock/<commit-or-tag>";
+```
+
+You can also use `services.displayManager.sddm.theme` in the usual NixOS style:
 
 ```nix
 {
   services.displayManager.sddm = {
     enable = true;
     theme = "Genshin";
-    settings.Theme = {
-      CursorTheme = "breeze_cursors";
-      CursorSize = 24;
-    };
-  };
-
-  programs.qylock = {
-    enable = true;
-    mode = "sddm";
-    theme = "Genshin"; # default; can be overridden via services.displayManager.sddm.theme
   };
 }
-```
-
-Or import it via a flake input (GitHub URL), even though this repo itself is not a flake:
-
-```nix
-{
-  inputs.qylock-src = {
-    url = "github:Pfuenzle/qylock";
-    flake = false;
-  };
-
-  outputs = { self, nixpkgs, qylock-src, ... }: {
-    nixosConfigurations.myhost = nixpkgs.lib.nixosSystem {
-      system = "x86_64-linux";
-      modules = [
-        "${qylock-src}/nix/module.nix"
-        ({ ... }: {
-          services.displayManager.sddm.enable = true;
-          programs.qylock.enable = true;
-          programs.qylock.mode = "both";
-          programs.qylock.theme = "Genshin";
-        })
-      ];
-    };
-  };
-}
-```
-
-If you pin to a specific revision:
-
-```nix
-inputs.qylock-src.url = "github:Pfuenzle/qylock/<commit-or-tag>";
 ```
 
 Notes:
