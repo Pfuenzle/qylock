@@ -150,18 +150,19 @@ in
 
       environment.systemPackages =
         commonPackages
-        ++ lib.optionals wantsSddm sddmPackages
+        ++ lib.optionals wantsSddm (sddmPackages ++ [ (mkQylockThemePackage cfg.theme) ])
         ++ lib.optionals wantsQuickshell (quickshellPackages ++ [ qylockQuickshellPackage ]);
 
       services.displayManager.sddm = mkIf wantsSddm {
         theme = lib.mkDefault cfg.theme;
-        themePackages = [ (mkQylockThemePackage cfg.theme) ];
       };
     })
 
     (mkIf (!cfg.enable && sddmThemeIsQylock) {
-      environment.systemPackages = commonPackages ++ sddmPackages;
-      services.displayManager.sddm.themePackages = [ (mkQylockThemePackage config.services.displayManager.sddm.theme) ];
+      environment.systemPackages =
+        commonPackages
+        ++ sddmPackages
+        ++ [ (mkQylockThemePackage config.services.displayManager.sddm.theme) ];
     })
   ];
 }
